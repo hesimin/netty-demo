@@ -17,4 +17,10 @@ public class SecureClientHandler extends SimpleChannelInboundHandler<String> {
         cause.printStackTrace();
         ctx.close();
     }
+
+    @Override
+    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+        System.out.println(">> Disconnect");
+        super.channelUnregistered(ctx);
+    }
 }
