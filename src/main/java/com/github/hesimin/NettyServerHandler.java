@@ -1,5 +1,6 @@
 package com.github.hesimin;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
@@ -13,10 +14,17 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
  */
 @ChannelHandler.Sharable//注解@Sharable可以让它在channels间共享
 public class NettyServerHandler extends ChannelInboundHandlerAdapter {
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        System.out.println("server received data :" + msg);
-        ctx.write("server write: " + msg);//写回数据
+        System.out.println("server channelRead..");
+        ByteBuf buf = (ByteBuf) msg;
+        byte[] req = new byte[buf.readableBytes()];
+        buf.readBytes(req);
+        String body = new String(req, "UTF-8");
+        System.out.println("server received data :" + body);
+
+        ctx.write(Unpooled.copiedBuffer(("server time = " + System.currentTimeMillis()).getBytes()));//写回数据
     }
 
     @Override
